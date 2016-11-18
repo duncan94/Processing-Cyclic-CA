@@ -4,9 +4,9 @@ final int YRES = 256; //Vertical Resolution
 final int R = 1; //neighbourhood range
 final int T = 3; //threshold
 final int C = 3; //count of states in the rule
-int N = 0; //0 - Moore Neighborhood, 1 - Von Neumann Neighborhood
-int GH = 0; //1 - Greenberg–Hastings Model(GH)
-int cMode = 1; //1 -- Rainbow, 2 -- Green
+final int N = 0; //0 - Moore Neighborhood, 1 - Von Neumann Neighborhood
+final int GH = 0; //1 - Greenberg–Hastings Model(GH)
+final int cMode = 1; //1 -- Rainbow, 2 -- Green
 
 
 int[][] cell = new int[XRES][YRES];
