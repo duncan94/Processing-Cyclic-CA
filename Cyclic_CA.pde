@@ -3,8 +3,10 @@ final int XRES = 256; //Horizontal Resolution
 final int YRES = 256; //Vertical Resolution
 final int R = 1; //neighbourhood range
 final int T = 3; //threshold
-final int C = 4; //count of states in the rule
+final int C = 3; //count of states in the rule
 int N = 0; //0 - Moore Neighborhood, 1 - Von Neumann Neighborhood
+int GH = 0; //1 - Greenberg–Hastings Model(GH)
+int cMode = 1; //1 -- Rainbow, 2 -- Green
 
 
 int[][] cell = new int[XRES][YRES];
@@ -33,14 +35,28 @@ void calc(int x, int y) {
         }
         
         if(N == 0) {
-          if(val == (cval + 1)%C) {
-            count++;
+          if(GH == 0) {
+            if(val == (cval + 1)%C) {
+              count++;
+            }
+          }
+          else {
+            if(cval == 0 && val == 1) {
+              count++;
+            }
           }
         }
         else if(N == 1) {
           if(mDistance(x, y, idx, idx2) <= R) {
-            if(val == (cval + 1)%C) {
-              count++;
+            if(GH == 0) {
+              if(val == (cval + 1)%C) {
+                count++;
+              }
+            }
+            else {
+              if(cval == 0 && val == 1) {
+                count++;
+              }
             }
           }
         }
@@ -48,11 +64,21 @@ void calc(int x, int y) {
     }
   }
   
-  if(count >= T) {
-    cell_n[x][y] = (cval + 1)%C;
+  if(GH == 0) {
+    if(count >= T) {
+      cell_n[x][y] = (cval + 1)%C;
+    }
+    else {
+      cell_n[x][y] = cval;
+    }
   }
   else {
-    cell_n[x][y] = cval;
+    if(cval == 0 && count >= T) {
+      cell_n[x][y] = 1;
+    }
+    if(cval != 0) {
+      cell_n[x][y] = (cval + 1)%C;
+    }
   }
 }
 
@@ -61,7 +87,7 @@ void setup() {
   size(512, 512);
   background(0);
   colorMode(HSB, 360, 1, 1);
-  frameRate(10);
+  frameRate(20);
   
   for(int i = 0; i < XRES; i++) {
     for(int j = 0; j < YRES; j++) {
@@ -77,7 +103,13 @@ void draw() {
   //Draw and Calc
   for(int i = 0; i < XRES; i++) {
     for(int j = 0; j < YRES; j++) {
-      color col = color(cell[i][j]*240.0/floor(C - 1), 1, 1);
+      color col = color(0);
+      if(cMode == 1) {
+        col = color(cell[i][j]*240.0/floor(C - 1), 1, 1);
+      }
+      if(cMode == 2) {
+        col = color(100, 1, cell[i][j]*1.0/floor(C - 1));
+      }
       stroke(col);
       fill(col);
       rect(width/XRES * i, height/YRES * j, width/XRES, height/YRES);
